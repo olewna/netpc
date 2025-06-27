@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NetPcApi.Data;
+using NetPcApi.Interfaces;
 using NetPcApi.Models;
+using NetPcApi.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -77,6 +79,10 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddControllers();
+
+builder.Services.AddScoped<IContactRepository, ContactRepository>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -89,5 +95,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapControllers();
 
 app.Run();
