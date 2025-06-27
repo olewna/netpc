@@ -12,7 +12,7 @@ using NetPcApi.Data;
 namespace NetPcApi.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20250627104657_Init")]
+    [Migration("20250627130505_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -189,7 +189,7 @@ namespace NetPcApi.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -199,7 +199,7 @@ namespace NetPcApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PasswordHash")
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -211,6 +211,9 @@ namespace NetPcApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("Contacts");
                 });

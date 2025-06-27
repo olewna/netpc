@@ -9,9 +9,10 @@ namespace NetPcApi.Interfaces
     public interface IContactRepository
     {
         Task<List<Contact>> GetAllAsync();
-        // Task<Contact> GetByIdAsync();
-        // Task<Contact> CreateAsync(Contact contactModel);
+        Task<Contact?> GetByIdAsync(int id);
+        Task<Contact> CreateAsync(Contact contactModel);
         // Task<Contact?> UpdateAsync(int id, UpdateContactRequestDto contactDto);
         // Task<Contact?> DeleteAsync(int id);
+        Task<bool> CheckIfEmailExists(string email);
     }
 }
