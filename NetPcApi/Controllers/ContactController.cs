@@ -61,7 +61,7 @@ namespace NetPcApi.Controllers
 
             if (await _contactRepository.CheckIfEmailExists(contactModel.Email))
             {
-                return Conflict(new { message = "A contact with this email already exists." });
+                return Conflict(new { message = "Kontakt z podanym emailem już istnieje" });
             }
 
             var contact = contactModel.ToContactFromDto();
@@ -85,6 +85,31 @@ namespace NetPcApi.Controllers
             }
 
             return NoContent();
+        }
+
+        [HttpPut("{id:int}")]
+        // [Authorize]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateContactRequestDto contactDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var foundContact = await _contactRepository.GetByIdAsync(id);
+            if (foundContact == null)
+            {
+                return NotFound(new { message = "Nie znaleziono kontaktu" });
+            }
+            if (!(foundContact.Email == contactDto.Email))
+            {
+                if (await _contactRepository.CheckIfEmailExists(contactDto.Email))
+                {
+                    return Conflict(new { message = "Kontakt z podanym emailem już istnieje" });
+                }
+            }
+
+            var updateContact = await _contactRepository.UpdateAsync(id, contactDto);
+            return Ok(updateContact);
         }
     }
 }

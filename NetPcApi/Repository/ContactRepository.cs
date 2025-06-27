@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NetPcApi.Data;
+using NetPcApi.Dtos.Contact;
 using NetPcApi.Interfaces;
 using NetPcApi.Models;
 
@@ -52,6 +53,19 @@ namespace NetPcApi.Repository
         public async Task<Contact?> GetByIdAsync(int id)
         {
             return await _context.Contact.FindAsync(id);
+        }
+
+        public async Task<Contact?> UpdateAsync(int id, UpdateContactRequestDto contactDto)
+        {
+            var foundContact = await _context.Contact.FindAsync(id);
+            if (foundContact == null)
+            {
+                return null;
+            }
+
+            _context.Entry(foundContact).CurrentValues.SetValues(contactDto);
+            await _context.SaveChangesAsync();
+            return foundContact;
         }
     }
 }
