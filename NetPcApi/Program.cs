@@ -7,6 +7,7 @@ using NetPcApi.Data;
 using NetPcApi.Interfaces;
 using NetPcApi.Models;
 using NetPcApi.Repository;
+using NetPcApi.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -82,6 +83,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddControllers();
 
 builder.Services.AddScoped<IContactRepository, ContactRepository>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 

@@ -51,7 +51,7 @@ namespace NetPcApi.Controllers
         }
 
         [HttpPost]
-        // [Authorize]
+        [Authorize]
         public async Task<IActionResult> Create([FromBody] CreateContactRequestDto contactModel)
         {
             if (!ModelState.IsValid)
@@ -70,7 +70,7 @@ namespace NetPcApi.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        // [Authorize]
+        [Authorize]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             if (!ModelState.IsValid)
@@ -88,7 +88,7 @@ namespace NetPcApi.Controllers
         }
 
         [HttpPut("{id:int}")]
-        // [Authorize]
+        [Authorize]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateContactRequestDto contactDto)
         {
             if (!ModelState.IsValid)
