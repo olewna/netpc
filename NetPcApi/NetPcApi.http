@@ -1,6 +1,0 @@
-@NetPcApi_HostAddress = http://localhost:5074
-
-GET {{NetPcApi_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
