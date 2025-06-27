@@ -29,6 +29,20 @@ namespace NetPcApi.Repository
             return contactModel;
         }
 
+        public async Task<Contact?> DeleteAsync(int id)
+        {
+            var foundContact = await _context.Contact.FindAsync(id);
+
+            if (foundContact == null)
+            {
+                return null;
+            }
+
+            _context.Contact.Remove(foundContact);
+            await _context.SaveChangesAsync();
+            return foundContact;
+        }
+
         public async Task<List<Contact>> GetAllAsync()
         {
             return await _context.Contact.ToListAsync();

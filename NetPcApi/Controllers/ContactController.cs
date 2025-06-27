@@ -68,5 +68,23 @@ namespace NetPcApi.Controllers
             await _contactRepository.CreateAsync(contact);
             return CreatedAtAction(nameof(GetById), new { id = contact.Id }, contact);
         }
+
+        [HttpDelete("{id:int}")]
+        // [Authorize]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var response = await _contactRepository.DeleteAsync(id);
+            if (response == null)
+            {
+                return NotFound(new { message = "Nie znaleziono kontaktu do usunięcia" });
+            }
+
+            return NoContent();
+        }
     }
 }

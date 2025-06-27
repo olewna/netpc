@@ -12,7 +12,7 @@ namespace NetPcApi.Interfaces
         Task<Contact?> GetByIdAsync(int id);
         Task<Contact> CreateAsync(Contact contactModel);
         // Task<Contact?> UpdateAsync(int id, UpdateContactRequestDto contactDto);
-        // Task<Contact?> DeleteAsync(int id);
+        Task<Contact?> DeleteAsync(int id);
         Task<bool> CheckIfEmailExists(string email);
     }
 }
