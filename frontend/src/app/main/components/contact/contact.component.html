@@ -1,1 +1,17 @@
-<p>contact works!</p>
+<main>
+    <div class="container">
+        <div>{{contact.id}}</div> 
+        <div>{{contact.firstName}}</div>
+        <div>{{contact.lastName}}</div>
+        <div>{{contact.email}}</div> 
+        <div>{{contact.password}}</div> 
+        <div>{{contact.category}}</div>
+         @if (contact.subCategory) {
+            <div>{{contact.subCategory}}</div>
+         }
+         <div>{{contact.phoneNumber}}</div>
+         <!-- TODO pipe do daty -->
+         <div>{{contact.dateOfBirth}}</div> 
+    </div>
+    <button (click)="goBack()">Wróć</button>
+</main>
