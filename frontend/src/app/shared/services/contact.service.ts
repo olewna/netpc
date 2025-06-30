@@ -1,0 +1,19 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Contact } from '../models/Contact.model';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class ContactService {
+  public constructor(private httpClient: HttpClient) {}
+
+  public getAllContacts(): Observable<Contact[]> {
+    return this.httpClient.get<Contact[]>(`api/contact`);
+  }
+
+  public getContactById(id: string): Observable<Contact> {
+    return this.httpClient.get<Contact>(`api/contact/` + id);
+  }
+}
