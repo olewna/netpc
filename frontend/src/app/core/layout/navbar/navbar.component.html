@@ -1,6 +1,10 @@
 <nav>
     <div class="container">
         <div class="item home" (click)="goToHome()">Kontakty</div>
-        <div class="item login">Login</div>
+        @if (!isLoggedIn) {
+            <div class="item login" (click)="goToLogin()">Login</div>
+        } @else {
+            <div class="item login" (click)="logout()">Logout</div>
+        }
     </div>
 </nav>

@@ -1,0 +1,25 @@
+<main>
+    <div class="container">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form">
+            <label for="name">Nazwa użytkownika:</label>
+            <input type="text" id="name" formControlName="username" placeholder="Nazwa użytkownika...">
+            
+            <label for="password">Hasło:</label>
+            <input type="password" id="password" formControlName="password" placeholder="Hasło...">
+            
+            @if(errorMsg) {
+                <div>{{errorMsg}}</div>
+            }
+
+            <button type="submit">
+                Zaloguj się
+            </button>
+            
+            <div>
+                <div>Jeśli nie masz konta:</div>
+                <button (click)="goToRegister()">Zarejestruj się najpierw</button>
+            </div>
+            <button (click)="goBack()">Wróć</button>
+        </form>
+    </div>
+</main>

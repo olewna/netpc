@@ -3,6 +3,8 @@ import { HomeComponent } from './main/components/home/home.component';
 import { ContactComponent } from './main/components/contact/contact.component';
 import { NotFoundComponent } from './main/components/not-found/not-found.component';
 import { ContactFormComponent } from './main/components/contact-form/contact-form.component';
+import { RegisterComponent } from './main/components/register/register.component';
+import { LoginComponent } from './main/components/login/login.component';
 
 export const routes: Routes = [
   {
@@ -22,14 +24,14 @@ export const routes: Routes = [
     path: 'contact/form/:id',
     component: ContactFormComponent,
   },
-  //   {
-  //     path: 'register',
-  //     component: undefined,
-  //   },
-  //   {
-  //     path: 'login',
-  //     component: undefined,
-  //   },
+  {
+    path: 'register',
+    component: RegisterComponent,
+  },
+  {
+    path: 'login',
+    component: LoginComponent,
+  },
   {
     path: '**',
     component: NotFoundComponent,
