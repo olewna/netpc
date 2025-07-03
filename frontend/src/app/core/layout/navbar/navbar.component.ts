@@ -6,8 +6,6 @@ import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
-  standalone: true,
-  imports: [],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
 })
@@ -22,7 +20,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.sub = this.authService.isLoggedIn$.subscribe((status) => {
-      console.log(status);
       this.isLoggedIn = status;
     });
   }

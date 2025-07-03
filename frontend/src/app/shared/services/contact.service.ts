@@ -16,4 +16,8 @@ export class ContactService {
   public getContactById(id: string): Observable<Contact> {
     return this.httpClient.get<Contact>(`api/contact/` + id);
   }
+
+  public deleteContact(id: string): Observable<void> {
+    return this.httpClient.delete<void>(`api/contact/` + id);
+  }
 }

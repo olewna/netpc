@@ -17,12 +17,16 @@ export const routes: Routes = [
     redirectTo: '',
   },
   {
-    path: 'contact/:id',
-    component: ContactComponent,
+    path: 'contact/form',
+    component: ContactFormComponent,
   },
   {
     path: 'contact/form/:id',
     component: ContactFormComponent,
+  },
+  {
+    path: 'contact/:id',
+    component: ContactComponent,
   },
   {
     path: 'register',

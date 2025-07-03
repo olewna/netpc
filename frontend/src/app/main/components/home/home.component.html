@@ -1,6 +1,11 @@
 <main>
     <div class="container">
         <div class="title">Lista kontaktów</div>
+        @if (isLoggedIn) {
+            <section>
+                <button (click)="goToContactAddForm()">Dodaj nowy kontakt</button>
+            </section>
+        }
         <ul>
            @for (contact of contacts; track contact.id){
             <li>{{contact.firstName}} {{contact.lastName}} <button (click)="goToDetails(contact.id)">Szczegóły</button></li>

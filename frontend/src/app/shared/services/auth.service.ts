@@ -39,8 +39,8 @@ export class AuthService {
     if (!token) return false;
 
     try {
-      const jwt = jwtDecode(token);
-      console.log(jwt);
+      const jwt = jwtDecode(token); //odkodowanie tokenu w celu pozyskania danych użytkownika
+      // console.log(jwt);
       const timeLeft = jwt.exp;
       return timeLeft! * 1000 > Date.now();
     } catch {
