@@ -37,14 +37,14 @@ namespace NetPcApi.Controllers
 
             if (user == null)
             {
-                return Unauthorized("Nieprawidłowy login!");
+                return Unauthorized(new { message = "Nieprawidłowy login!" });
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
             if (!result.Succeeded)
             {
-                return Unauthorized("Nieprawidłowy login i/lub hasło!");
+                return Unauthorized(new { message = "Nieprawidłowy login i/lub hasło!" });
             }
 
             return Ok(
@@ -66,6 +66,14 @@ namespace NetPcApi.Controllers
                 {
                     return BadRequest();
                 }
+
+                var emailExists = await _userManager.Users.AnyAsync(u => u.Email == registerDto.Email);
+
+                if (emailExists)
+                {
+                    return BadRequest(new { message = "Konto z podanym emailem już istnieje!" });
+                }
+                ;
 
                 var user = new User
                 {

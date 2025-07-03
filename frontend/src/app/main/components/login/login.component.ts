@@ -17,9 +17,10 @@ import { Location } from '@angular/common';
   styleUrl: './login.component.scss',
 })
 export class LoginComponent implements OnInit {
-  submitted = false;
-  loginForm!: FormGroup;
-  errorMsg: string = '';
+  protected submitted = false;
+  protected loginForm!: FormGroup;
+  protected errorMsg: string = '';
+  protected showPassword: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -36,7 +37,7 @@ export class LoginComponent implements OnInit {
   }
 
   public onSubmit() {
-    console.log(this.loginForm.value);
+    // console.log(this.loginForm.value);
 
     this.authService.login(this.loginForm.value as UserLogin).subscribe({
       next: (response: UserResponse) => {
@@ -52,6 +53,10 @@ export class LoginComponent implements OnInit {
         }, 5000);
       },
     });
+  }
+
+  public togglePassword(): void {
+    this.showPassword = !this.showPassword;
   }
 
   public goToRegister() {

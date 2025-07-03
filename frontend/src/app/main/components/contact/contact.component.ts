@@ -1,21 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ContactService } from '../../../shared/services/contact.service';
 import { Contact } from '../../../shared/models/Contact.model';
 import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs';
+import { AuthService } from '../../../shared/services/auth.service';
 
 @Component({
   selector: 'app-contact',
   templateUrl: './contact.component.html',
   styleUrl: './contact.component.scss',
 })
-export class ContactComponent implements OnInit {
+export class ContactComponent implements OnInit, OnDestroy {
   public constructor(
     private activatedRoute: ActivatedRoute,
     private contactService: ContactService,
     private location: Location,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   protected contactId!: string;
@@ -34,6 +37,8 @@ export class ContactComponent implements OnInit {
     phoneNumber: '',
     dateOfBirth: '',
   };
+  protected isLoggedIn = false;
+  private sub!: Subscription;
 
   public ngOnInit(): void {
     this.activatedRoute.params.subscribe((params: Params) => {
@@ -47,6 +52,10 @@ export class ContactComponent implements OnInit {
       error: (err: HttpErrorResponse) => {
         this.errorMsg = 'Nie ma takiego kontaktu!';
       },
+    });
+
+    this.sub = this.authService.isLoggedIn$.subscribe((status) => {
+      this.isLoggedIn = status;
     });
   }
 
@@ -84,5 +93,9 @@ export class ContactComponent implements OnInit {
 
   public closeResponseModal(): void {
     this.router.navigate(['home']);
+  }
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
   }
 }

@@ -1,25 +1,40 @@
 <main>
     <div class="container">
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form">
-            <label for="name">Nazwa użytkownika:</label>
-            <input type="text" id="name" formControlName="username" placeholder="Nazwa użytkownika...">
+            <div class="item">
+                <label for="name">Nazwa użytkownika:</label>
+                <input type="text" id="name" formControlName="username" placeholder="Nazwa użytkownika...">
+                @if (loginForm.get('username')?.touched && loginForm.get('username')?.hasError('required')) {
+                    <div class="error">
+                        Wymagana nazwa użytkownika
+                    </div>
+                }
+            </div>
             
-            <label for="password">Hasło:</label>
-            <input type="password" id="password" formControlName="password" placeholder="Hasło...">
+            <div class="item">
+                <label for="password">Hasło:</label>
+                <input type="{{showPassword ? 'text' : 'password'}}" id="password" formControlName="password" placeholder="Hasło...">
+                @if (loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')) {
+                    <div class="error">
+                        Wymagane hasło
+                    </div>
+                }
+                <button type="button" (click)="togglePassword()">{{showPassword ? "Ukryj hasło" : "Pokaż hasło"}}</button>
+            </div>
             
             @if(errorMsg) {
-                <div>{{errorMsg}}</div>
+                <div class="error">{{errorMsg}}</div>
             }
 
             <button type="submit">
                 Zaloguj się
             </button>
             
-            <div>
+            <div class="item">
                 <div>Jeśli nie masz konta:</div>
-                <button (click)="goToRegister()">Zarejestruj się najpierw</button>
+                <button type="button" (click)="goToRegister()">Zarejestruj się</button>
             </div>
-            <button (click)="goBack()">Wróć</button>
+            <button type="button" (click)="goBack()">Wróć</button>
         </form>
     </div>
 </main>

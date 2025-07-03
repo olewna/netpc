@@ -10,6 +10,8 @@ import { ContactService } from '../../../shared/services/contact.service';
 import { ContactDto } from '../../../shared/form.models/ContactDto.model';
 import { Contact } from '../../../shared/models/Contact.model';
 import { HttpErrorResponse } from '@angular/common/http';
+import { first } from 'rxjs';
+import { formatDate } from '../../../shared/utils/formatDate';
 
 @Component({
   selector: 'app-contact-form',
@@ -84,7 +86,25 @@ export class ContactFormComponent implements OnInit {
       subCategoryControl?.reset('');
 
       subCategoryControl?.updateValueAndValidity();
-    });
+    }); // resetowanie wartości subcategory, kiedy category zostanie zeminione
+
+    if (!this.isAddMode) {
+      this.contactService.getContactById(this.id).subscribe({
+        next: (response: Contact) => {
+          const { firstName, lastName, dateOfBirth, ...rest } = response;
+          this.contactForm.patchValue({
+            firstname: firstName,
+            lastname: lastName,
+            dateOfBirth: formatDate(dateOfBirth),
+          });
+          this.contactForm.patchValue(rest); //wpisanie w inputy reszte istniejących wartości
+        },
+        error: (err: HttpErrorResponse) => {
+          this.errorMsg =
+            'Nie można pobrać danych tego kontaktu lub taki kontakt nie istnieje';
+        },
+      });
+    }
   }
 
   public goBack(): void {
@@ -93,27 +113,48 @@ export class ContactFormComponent implements OnInit {
 
   public submit(): void {
     if (this.contactForm.valid) {
-      console.log(this.contactForm.value);
+      // console.log(this.contactForm.value);
+      if (this.isAddMode) {
+        this.contactService
+          .createContact(this.contactForm.value as ContactDto)
+          .subscribe({
+            next: (response: Contact) => {
+              this.errorMsg = 'Pomyślnie utworzono kontakt';
+              setTimeout(() => {
+                this.errorMsg = '';
+              }, 5000);
 
-      this.contactService
-        .createContact(this.contactForm.value as ContactDto)
-        .subscribe({
-          next: (response: Contact) => {
-            this.errorMsg = 'Pomyślnie utworzono kontakt';
-            setTimeout(() => {
-              this.errorMsg = '';
-            }, 5000);
+              this.contactForm.reset();
+            },
+            error: (err: HttpErrorResponse) => {
+              console.error(err);
+              this.errorMsg = err.error ? err.error.message : 'Błąd';
+              setTimeout(() => {
+                this.errorMsg = '';
+              }, 5000);
+            },
+          });
+      } else {
+        this.contactService
+          .updateContact(this.contactForm.value as ContactDto, this.id)
+          .subscribe({
+            next: (response: Contact) => {
+              this.errorMsg = 'Pomyślnie zaaktualizowano kontakt';
+              setTimeout(() => {
+                this.errorMsg = '';
+              }, 5000);
 
-            this.contactForm.reset();
-          },
-          error: (err: HttpErrorResponse) => {
-            console.error(err);
-            this.errorMsg = err.error.message;
-            setTimeout(() => {
-              this.errorMsg = '';
-            }, 5000);
-          },
-        });
+              // this.contactForm.reset();
+            },
+            error: (err: HttpErrorResponse) => {
+              console.error(err);
+              this.errorMsg = err.error ? err.error.message : 'Błąd';
+              setTimeout(() => {
+                this.errorMsg = '';
+              }, 5000);
+            },
+          });
+      }
     } else {
       this.errorMsg = 'Wystąpił błąd';
       setTimeout(() => {

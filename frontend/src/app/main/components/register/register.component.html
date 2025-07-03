@@ -1,1 +1,72 @@
-<p>register works!</p>
+<main>
+    <div class="container">
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="form">
+            <div class="item">
+                <label for="name">Nazwa użytkownika:</label>
+                <input type="text" id="name" formControlName="username" placeholder="Nazwa użytkownika...">
+                @if (registerForm.get('username')?.touched) {
+                    @if (registerForm.get('username')?.hasError('required')) {
+                        <div class="error">Wymagana nazwa użytkownika!</div>
+                    } @else if (registerForm.get('username')?.hasError('minLength')) {
+                        <div class="error">Nazwa użytkownika powinna mieć przynajmniej 3 znaki!</div>
+                    }
+                }
+            </div>
+            
+            <div class="item">
+                <label for="email">Email:</label>
+                <input type="text" id="email" formControlName="email" placeholder="Email...">
+                @if (registerForm.get('email')?.touched) {
+                    @if (registerForm.get('email')?.hasError('required')) {
+                        <div class="error">Wymagany email!</div>
+                    } @else if (registerForm.get('email')?.hasError('email')) {
+                        <div class="error">Niepoprawny email!</div>
+                    }
+                }
+            </div>
+            
+            <div class="item">
+                <label for="password">Hasło:</label>
+                <input type="{{showPassword ? 'text' : 'password'}}" id="password" formControlName="password" placeholder="Hasło...">
+                @if (registerForm.get('password')?.touched) {
+                    @if (registerForm.get('password')?.hasError('required')) {
+                        <div class="error">Wymagane hasło!</div>
+                    } @else if (registerForm.get('password')?.hasError('minLength')) {
+                        <div class="error">Hasło powinno mieć przynajmniej 8 znaków!</div>
+                    } @else if (registerForm.get('password')?.hasError('pattern')) {
+                        <div class="error">Hasło powinno składać się z dużej litery, małej litery, cyfry i znaku specjalnego!</div>
+                    }
+                }
+                <button type="button" (click)="togglePassword()">{{showPassword ? "Ukryj hasło" : "Pokaż hasło"}}</button>
+            </div>
+            
+            <div class="item">
+                <label for="passwordagain">Hasło:</label>
+                <input type="{{showPasswordConfirmation ? 'text' : 'password'}}" id="passwordagain" formControlName="confirmPassword" placeholder="Powtórz hasło...">
+                @if (registerForm.get('confirmPassword')?.touched) {
+                    @if (registerForm.get('confirmPassword')?.hasError('required')) {
+                        <div class="error">Wymagane powtórzenie hasła!</div>
+                    } @else if (registerForm.hasError('passwordMismatch')) {
+                        <div class="error">Hasła się nie zgadzają!</div>
+                    }
+                }
+                <button type="button" (click)="togglePasswordConfirmation()">{{showPasswordConfirmation ? "Ukryj hasło" : "Pokaż hasło"}}</button>
+            </div>
+            
+
+            @if(errorMsg) {
+            <div class="error">{{errorMsg}}</div>
+            }
+
+            <button [disabled]="registerForm.invalid" type="submit">
+                Zarejestruj się
+            </button>
+
+            <div class="item">
+                <div>Masz już konto?</div>
+                <button type="button" (click)="goToLogin()">Zaloguj się</button>
+            </div>
+            <button type="button" (click)="goBack()">Wróć</button>
+        </form>
+    </div>
+</main>

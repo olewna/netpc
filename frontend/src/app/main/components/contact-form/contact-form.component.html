@@ -1,5 +1,5 @@
 <main>
-    <div class="title">Dodaj kontakt</div>
+    <div class="title">{{isAddMode ? "Dodaj kontakt" : "Edytuj kontakt"}}</div>
     <form [formGroup]="contactForm" (ngSubmit)="submit()">
         <div class="item">
             <label>Imię:</label>
@@ -79,7 +79,7 @@
         </div>
     
         <div class="item">
-            <button [disabled]="contactForm.invalid" type="submit">Zapisz</button>
+            <button [disabled]="contactForm.invalid" type="submit">{{isAddMode ? "Dodaj kontakt" : "Zaaktualizuj kontakt"}}</button>
             @if (errorMsg !== ''){
                 <div class="error">{{errorMsg}}</div>
             }

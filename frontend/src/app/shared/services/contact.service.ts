@@ -25,4 +25,8 @@ export class ContactService {
   public createContact(contact: ContactDto): Observable<Contact> {
     return this.httpClient.post<Contact>(`api/contact`, contact);
   }
+
+  public updateContact(contact: ContactDto, id: string): Observable<Contact> {
+    return this.httpClient.put<Contact>(`api/contact/` + id, contact);
+  }
 }

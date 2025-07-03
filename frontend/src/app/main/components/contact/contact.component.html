@@ -28,10 +28,12 @@
                     <!-- TODO pipe do daty -->
                     <div>{{contact.dateOfBirth}}</div> 
                 </div>
-                <div>
-                    <button (click)="showModal()">Usuń kontakt</button>
-                    <button (click)="goToEditContact()">Edytuj kontakt</button>
-                </div>
+                @if(isLoggedIn){
+                    <div>
+                        <button (click)="showModal()">Usuń kontakt</button>
+                        <button (click)="goToEditContact()">Edytuj kontakt</button>
+                    </div>
+                }
             } @else {
                 <div>{{errorMsg}}</div>
             }

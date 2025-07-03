@@ -18,6 +18,18 @@ main {
             align-items: center;
             justify-content: center;
             gap: 8px;
+            padding: 4px;
+
+            .item {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 4px;
+            
+                    .error {
+                        color: red;
+                        font-size: 12px;
+                    }
+                }
         }
     }
 }
