@@ -5,6 +5,7 @@ import { NotFoundComponent } from './main/components/not-found/not-found.compone
 import { ContactFormComponent } from './main/components/contact-form/contact-form.component';
 import { RegisterComponent } from './main/components/register/register.component';
 import { LoginComponent } from './main/components/login/login.component';
+import { loggedGuard, notLoggedGuard } from './core/guards/auth-guard.guard';
 
 export const routes: Routes = [
   {
@@ -19,10 +20,12 @@ export const routes: Routes = [
   {
     path: 'contact/form',
     component: ContactFormComponent,
+    canActivate: [notLoggedGuard],
   },
   {
     path: 'contact/form/:id',
     component: ContactFormComponent,
+    canActivate: [notLoggedGuard],
   },
   {
     path: 'contact/:id',
@@ -31,10 +34,12 @@ export const routes: Routes = [
   {
     path: 'register',
     component: RegisterComponent,
+    canActivate: [loggedGuard],
   },
   {
     path: 'login',
     component: LoginComponent,
+    canActivate: [loggedGuard],
   },
   {
     path: '**',
