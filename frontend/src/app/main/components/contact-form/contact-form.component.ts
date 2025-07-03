@@ -1,8 +1,128 @@
-import { Component } from '@angular/core';
+import { Location } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { pastDate } from '../../../shared/directives/past-date.directive';
+import { SubCategoryValidator } from '../../../shared/directives/subcategory.directive';
+import { Category } from '../../../shared/utils/enum/category.enum';
+import { Subcategory } from '../../../shared/utils/enum/subcategory.enum';
+import { ContactService } from '../../../shared/services/contact.service';
+import { ContactDto } from '../../../shared/form.models/ContactDto.model';
+import { Contact } from '../../../shared/models/Contact.model';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-contact-form',
   templateUrl: './contact-form.component.html',
   styleUrl: './contact-form.component.scss',
 })
-export class ContactFormComponent {}
+export class ContactFormComponent implements OnInit {
+  constructor(
+    private location: Location,
+    private route: ActivatedRoute,
+    private fb: FormBuilder,
+    private contactService: ContactService
+  ) {}
+
+  protected id: string = '';
+  protected isAddMode: boolean = true;
+  protected showPassword: boolean = false;
+  protected contactForm!: FormGroup;
+  protected categories: string[] = Object.values(Category);
+  protected subcategories: string[] = Object.values(Subcategory);
+  protected maxDate!: string;
+  protected errorMsg: string = '';
+
+  ngOnInit(): void {
+    this.id = this.route.snapshot.params['id'];
+    this.isAddMode = !this.id; // jeśli nie ma id to dodajemy, jak jest to edytujemy kontakt z podanym id
+
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    this.maxDate = yesterday.toISOString().split('T')[0];
+
+    this.contactForm = this.fb.group({
+      firstname: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.pattern(/^[A-Za-z]+$/),
+        ],
+      ],
+      lastname: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.pattern(/^[A-Za-z]+$/),
+        ],
+      ],
+      email: ['', [Validators.email, Validators.required]],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(8),
+          Validators.pattern(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).{8,}$/
+          ),
+        ],
+      ],
+      category: ['', [Validators.required]],
+      subCategory: ['', [SubCategoryValidator.conditionalRequired('category')]],
+      phoneNumber: [
+        '',
+        [Validators.required, Validators.pattern(/^\+?[0-9]{9,12}$/)],
+      ],
+      dateOfBirth: ['', [Validators.required, pastDate]],
+    });
+
+    this.contactForm.get('category')?.valueChanges.subscribe((value) => {
+      const subCategoryControl = this.contactForm.get('subCategory');
+
+      subCategoryControl?.reset('');
+
+      subCategoryControl?.updateValueAndValidity();
+    });
+  }
+
+  public goBack(): void {
+    this.location.back();
+  }
+
+  public submit(): void {
+    if (this.contactForm.valid) {
+      console.log(this.contactForm.value);
+
+      this.contactService
+        .createContact(this.contactForm.value as ContactDto)
+        .subscribe({
+          next: (response: Contact) => {
+            this.errorMsg = 'Pomyślnie utworzono kontakt';
+            setTimeout(() => {
+              this.errorMsg = '';
+            }, 5000);
+
+            this.contactForm.reset();
+          },
+          error: (err: HttpErrorResponse) => {
+            console.error(err);
+            this.errorMsg = err.error.message;
+            setTimeout(() => {
+              this.errorMsg = '';
+            }, 5000);
+          },
+        });
+    } else {
+      this.errorMsg = 'Wystąpił błąd';
+      setTimeout(() => {
+        this.errorMsg = '';
+      }, 5000);
+    }
+  }
+
+  public togglePassword(): void {
+    this.showPassword = !this.showPassword;
+  }
+}

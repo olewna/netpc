@@ -29,7 +29,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
 
     this.sub = this.authService.isLoggedIn$.subscribe((status) => {
-      console.log(status);
+      // console.log(status);
       this.isLoggedIn = status;
     });
   }

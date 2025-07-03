@@ -20,7 +20,7 @@ namespace NetPcApi.Dtos.Contact
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
         [Required]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$", ErrorMessage = "Hasło musi zawierać 8 znaków, w tym dużą i małą literę, cyfrę i znak specjalny")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).{8,}$", ErrorMessage = "Hasło musi zawierać 8 znaków, w tym dużą i małą literę, cyfrę i znak specjalny")]
         public string Password { get; set; } = string.Empty;
         [Required]
         public Category Category { get; set; }

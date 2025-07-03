@@ -1,1 +1,92 @@
-<p>contact-form works!</p>
+<main>
+    <div class="title">Dodaj kontakt</div>
+    <form [formGroup]="contactForm" (ngSubmit)="submit()">
+        <div class="item">
+            <label>Imię:</label>
+            <input formControlName="firstname" type="text" placeholder="Imię..." />
+            <div class="error" *ngIf="contactForm.get('firstname')?.touched && contactForm.get('firstname')?.invalid">Wymagane</div>
+        </div>
+    
+        <div class="item">
+            <label>Nazwisko:</label>
+            <input formControlName="lastname" type="text" placeholder="Nazwisko..." />
+            <div class="error" *ngIf="contactForm.get('lastname')?.touched && contactForm.get('lastname')?.invalid">Wymagane</div>
+        </div>
+    
+        <div class="item">
+            <label>Email:</label>
+            <input formControlName="email" type="email" placeholder="Email..." />
+            <div class="error" *ngIf="contactForm.get('email')?.touched && contactForm.get('email')?.invalid">Niepoprawny email</div>
+        </div>
+    
+        <div class="item">
+            <label>Hasło:</label>
+            <input formControlName="password" type="{{ showPassword ? 'text' : 'password'}}" placeholder="Hasło..." />
+            <button type="button" (click)="togglePassword()">{{ !showPassword ? 'Pokaż hasło' : 'Ukryj hasło'}}</button>
+            <div class="error" *ngIf="contactForm.get('password')?.touched && contactForm.get('password')?.invalid">
+                Hasło musi mieć min. 8 znaków, dużą i małą literę, cyfrę oraz znak specjalny.
+            </div>
+        </div> 
+    
+        <div class="item">
+            <label>Kategoria:</label>
+            <select formControlName="category">
+                <option [value]="''">-- wybierz --</option>
+                <option *ngFor="let category of (categories | keyvalue)" [value]="category.value">{{category.key}} - {{ category.value }}</option>
+            </select>
+            <div class="error" *ngIf="contactForm.get('category')?.touched && contactForm.get('category')?.invalid">
+                Wymagana kategoria
+            </div>
+        </div>
+        
+        <div class="item">
+            @if(contactForm.value.category === "Służbowy" || contactForm.value.category === "Inny") {
+                <label>Podkategoria:</label>
+            }
+            @switch (contactForm.value.category) {
+                @case ("Służbowy"){
+                    <select formControlName="subCategory">
+                        <option [value]="''">-- wybierz --</option>
+                        <option *ngFor="let subcategory of (subcategories | keyvalue)" [value]="subcategory.value">{{subcategory.key}} - {{ subcategory.value }}</option>
+                    </select>
+                    <div class="error" *ngIf="contactForm.get('subCategory')?.touched && contactForm.get('subCategory')?.invalid">
+                        Wymagana podkategoria
+                    </div>
+                }
+                @case ("Inny"){
+                    <input formControlName="subCategory" type="text" placeholder="Podkategoria..." />
+                    <div class="error" *ngIf="contactForm.get('subCategory')?.touched && contactForm.get('subCategory')?.invalid">
+                        Wymagana podkategoria
+                    </div>
+                }
+            }
+        </div>
+    
+        <div class="item">
+            <label>Numer telefonu:</label>
+            <input formControlName="phoneNumber" type="tel" placeholder="Numer telefonu..." />
+            <div class="error" *ngIf="contactForm.get('phoneNumber')?.touched && contactForm.get('phoneNumber')?.invalid">
+                Wprowadź poprawny numer telefonu
+            </div>
+        </div>
+    
+        <div class="item">
+            <label>Data urodzenia:</label>
+            <input formControlName="dateOfBirth" type="date" [max]="maxDate"/>
+            <div class="error" *ngIf="contactForm.get('dateOfBirth')?.errors?.['futureDate'] && contactForm.get('dateOfBirth')?.touched">
+                Data musi być w przeszłości
+            </div>
+        </div>
+    
+        <div class="item">
+            <button [disabled]="contactForm.invalid" type="submit">Zapisz</button>
+            @if (errorMsg !== ''){
+                <div class="error">{{errorMsg}}</div>
+            }
+        </div>
+    </form>
+      
+    <div>
+        <button type="button" (click)="goBack()">Wróć</button>
+    </div>
+</main>
