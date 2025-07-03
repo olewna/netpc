@@ -104,7 +104,7 @@ export class ContactFormComponent implements OnInit {
       categoryId: ['', [Validators.required]],
       subCategoryName: [
         '',
-        [SubCategoryValidator.conditionalRequired('category')],
+        [SubCategoryValidator.conditionalRequired('categoryId')],
       ],
       phoneNumber: [
         '',
@@ -124,10 +124,22 @@ export class ContactFormComponent implements OnInit {
     if (!this.isAddMode) {
       this.contactService.getContactById(this.id).subscribe({
         next: (response: Contact) => {
-          const { firstName, lastName, dateOfBirth, ...rest } = response;
+          const {
+            firstName,
+            lastName,
+            dateOfBirth,
+            categoryName,
+            subCategoryName,
+            ...rest
+          } = response;
+
+          const catId = this.categories.find((c) => c.name == categoryName)?.id;
+
           this.contactForm.patchValue({
             firstname: firstName,
             lastname: lastName,
+            categoryId: catId?.toString(),
+            subCategoryName: subCategoryName,
             dateOfBirth: formatDate(dateOfBirth),
           });
           this.contactForm.patchValue(rest); //wpisanie w inputy reszte istniejących wartości
