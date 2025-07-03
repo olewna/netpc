@@ -4,14 +4,17 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { pastDate } from '../../../shared/directives/past-date.directive';
 import { SubCategoryValidator } from '../../../shared/directives/subcategory.directive';
-import { Category } from '../../../shared/utils/enum/category.enum';
-import { Subcategory } from '../../../shared/utils/enum/subcategory.enum';
 import { ContactService } from '../../../shared/services/contact.service';
-import { ContactDto } from '../../../shared/form.models/ContactDto.model';
+import {
+  ContactCreateDto,
+  ContactDto,
+} from '../../../shared/form.models/ContactDto.model';
 import { Contact } from '../../../shared/models/Contact.model';
 import { HttpErrorResponse } from '@angular/common/http';
-import { first } from 'rxjs';
 import { formatDate } from '../../../shared/utils/formatDate';
+import { CategoryService } from '../../../shared/services/category.service';
+import { Category } from '../../../shared/models/Category.model';
+import { SubCategory } from '../../../shared/models/SubCategory.model';
 
 @Component({
   selector: 'app-contact-form',
@@ -23,15 +26,16 @@ export class ContactFormComponent implements OnInit {
     private location: Location,
     private route: ActivatedRoute,
     private fb: FormBuilder,
-    private contactService: ContactService
+    private contactService: ContactService,
+    private categoryService: CategoryService
   ) {}
 
   protected id: string = '';
   protected isAddMode: boolean = true;
   protected showPassword: boolean = false;
   protected contactForm!: FormGroup;
-  protected categories: string[] = Object.values(Category);
-  protected subcategories: string[] = Object.values(Subcategory);
+  protected categories: Category[] = [];
+  protected subcategories: SubCategory[] = [];
   protected maxDate!: string;
   protected errorMsg: string = '';
 
@@ -42,6 +46,32 @@ export class ContactFormComponent implements OnInit {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     this.maxDate = yesterday.toISOString().split('T')[0];
+
+    this.categoryService.getAllCategories().subscribe({
+      next: (categories: Category[]) => {
+        this.categories = categories;
+        // console.log(categories);
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error(err);
+        this.errorMsg = err.error
+          ? err.error.message
+          : 'Błąd pobierania kategorii...';
+      },
+    });
+
+    this.categoryService.getAllSubcategories().subscribe({
+      next: (subcategories: SubCategory[]) => {
+        this.subcategories = subcategories;
+        // console.log(subcategories);
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error(err);
+        this.errorMsg = err.error
+          ? err.error.message
+          : 'Błąd pobierania podkategorii...';
+      },
+    });
 
     this.contactForm = this.fb.group({
       firstname: [
@@ -71,8 +101,11 @@ export class ContactFormComponent implements OnInit {
           ),
         ],
       ],
-      category: ['', [Validators.required]],
-      subCategory: ['', [SubCategoryValidator.conditionalRequired('category')]],
+      categoryId: ['', [Validators.required]],
+      subCategoryName: [
+        '',
+        [SubCategoryValidator.conditionalRequired('category')],
+      ],
       phoneNumber: [
         '',
         [Validators.required, Validators.pattern(/^\+?[0-9]{9,12}$/)],
@@ -80,8 +113,8 @@ export class ContactFormComponent implements OnInit {
       dateOfBirth: ['', [Validators.required, pastDate]],
     });
 
-    this.contactForm.get('category')?.valueChanges.subscribe((value) => {
-      const subCategoryControl = this.contactForm.get('subCategory');
+    this.contactForm.get('categoryId')?.valueChanges.subscribe((value) => {
+      const subCategoryControl = this.contactForm.get('subCategoryName');
 
       subCategoryControl?.reset('');
 
@@ -116,7 +149,7 @@ export class ContactFormComponent implements OnInit {
       // console.log(this.contactForm.value);
       if (this.isAddMode) {
         this.contactService
-          .createContact(this.contactForm.value as ContactDto)
+          .createContact(this.contactForm.value as ContactCreateDto)
           .subscribe({
             next: (response: Contact) => {
               this.errorMsg = 'Pomyślnie utworzono kontakt';

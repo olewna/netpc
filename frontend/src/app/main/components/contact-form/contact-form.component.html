@@ -30,32 +30,32 @@
     
         <div class="item">
             <label>Kategoria:</label>
-            <select formControlName="category">
+            <select formControlName="categoryId">
                 <option [value]="''">-- wybierz --</option>
-                <option *ngFor="let category of (categories | keyvalue)" [value]="category.value">{{category.key}} - {{ category.value }}</option>
+                <option *ngFor="let category of categories" [value]="category.id">{{category.id}} - {{ category.name }}</option>
             </select>
-            <div class="error" *ngIf="contactForm.get('category')?.touched && contactForm.get('category')?.invalid">
+            <div class="error" *ngIf="contactForm.get('categoryId')?.touched && contactForm.get('categoryId')?.invalid">
                 Wymagana kategoria
             </div>
         </div>
         
         <div class="item">
-            @if(contactForm.value.category === "Służbowy" || contactForm.value.category === "Inny") {
+            @if(contactForm.value.categoryId === "1" || contactForm.value.categoryId === "3") {
                 <label>Podkategoria:</label>
             }
-            @switch (contactForm.value.category) {
-                @case ("Służbowy"){
-                    <select formControlName="subCategory">
+            @switch (contactForm.value.categoryId) {
+                @case ("1"){
+                    <select formControlName="subCategoryName">
                         <option [value]="''">-- wybierz --</option>
-                        <option *ngFor="let subcategory of (subcategories | keyvalue)" [value]="subcategory.value">{{subcategory.key}} - {{ subcategory.value }}</option>
+                        <option *ngFor="let subcategory of subcategories" [value]="subcategory.name">{{subcategory.id}} - {{ subcategory.name }}</option>
                     </select>
-                    <div class="error" *ngIf="contactForm.get('subCategory')?.touched && contactForm.get('subCategory')?.invalid">
+                    <div class="error" *ngIf="contactForm.get('subCategoryName')?.touched && contactForm.get('subCategoryName')?.invalid">
                         Wymagana podkategoria
                     </div>
                 }
-                @case ("Inny"){
-                    <input formControlName="subCategory" type="text" placeholder="Podkategoria..." />
-                    <div class="error" *ngIf="contactForm.get('subCategory')?.touched && contactForm.get('subCategory')?.invalid">
+                @case ("3"){
+                    <input formControlName="subCategoryName" type="text" placeholder="Podkategoria..." />
+                    <div class="error" *ngIf="contactForm.get('subCategoryName')?.touched && contactForm.get('subCategoryName')?.invalid">
                         Wymagana podkategoria
                     </div>
                 }

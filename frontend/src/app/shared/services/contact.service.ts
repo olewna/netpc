@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Contact } from '../models/Contact.model';
 import { Observable } from 'rxjs';
-import { ContactDto } from '../form.models/ContactDto.model';
+import { ContactDto, ContactCreateDto } from '../form.models/ContactDto.model';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +22,7 @@ export class ContactService {
     return this.httpClient.delete<void>(`api/contact/` + id);
   }
 
-  public createContact(contact: ContactDto): Observable<Contact> {
+  public createContact(contact: ContactCreateDto): Observable<Contact> {
     return this.httpClient.post<Contact>(`api/contact`, contact);
   }
 

@@ -4,8 +4,8 @@ export interface Contact {
   readonly lastName: string;
   readonly email: string;
   readonly password: string;
-  readonly category: number | string;
-  readonly subCategory: string;
+  readonly categoryName: string;
+  readonly subCategoryName: string;
   readonly phoneNumber: string;
   readonly dateOfBirth: string;
 }
