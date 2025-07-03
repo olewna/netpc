@@ -17,8 +17,8 @@ namespace NetPcApi.Mappers
                 LastName = contactDto.LastName,
                 Email = contactDto.Email,
                 Password = contactDto.Password,
-                Category = contactDto.Category,
-                SubCategory = contactDto.SubCategory,
+                CategoryId = contactDto.CategoryId,
+                SubCategoryId = contactDto.SubCategoryId,
                 PhoneNumber = contactDto.PhoneNumber,
                 DateOfBirth = contactDto.DateOfBirth
             };
