@@ -145,8 +145,9 @@ export class ContactFormComponent implements OnInit {
           this.contactForm.patchValue(rest); //wpisanie w inputy reszte istniejących wartości
         },
         error: (err: HttpErrorResponse) => {
-          this.errorMsg =
-            'Nie można pobrać danych tego kontaktu lub taki kontakt nie istnieje';
+          this.errorMsg = err.error
+            ? err.error.message
+            : 'Nie można pobrać danych tego kontaktu lub taki kontakt nie istnieje';
         },
       });
     }
