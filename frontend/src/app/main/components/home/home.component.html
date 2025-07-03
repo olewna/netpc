@@ -8,7 +8,7 @@
         }
         <ul>
            @for (contact of contacts; track contact.id){
-            <li>{{contact.firstName}} {{contact.lastName}} <button (click)="goToDetails(contact.id)">Szczegóły</button></li>
+            <li><strong>{{contact.id}}.</strong> {{contact.firstName}} {{contact.lastName}} <button (click)="goToDetails(contact.id)">Szczegóły</button></li>
            } @empty {
             <li>Brak kontaktów</li>
            }

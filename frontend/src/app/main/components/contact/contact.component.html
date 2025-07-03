@@ -13,20 +13,21 @@
                     <button (click)="confirm()" class="modal-btn">Tak</button>
                 </div></app-modal>
         } @else {
-            @if (errorMsg == '') {
+            @if (errorMsg === '') {
                 <div class="container">
-                    <div>{{contact.id}}</div> 
-                    <div>{{contact.firstName}}</div>
-                    <div>{{contact.lastName}}</div>
-                    <div>{{contact.email}}</div> 
-                    <div>{{contact.password}}</div> 
-                    <div>{{contact.category}}</div>
-                    @if (contact.subCategory) {
-                        <div>{{contact.subCategory}}</div>
+                    <div><strong>ID: </strong> {{contact.id}}</div> 
+                    <div><strong>Imię:</strong> {{contact.firstName}}</div>
+                    <div><strong>Nazwisko:</strong> {{contact.lastName}}</div>
+                    <div><strong>Adres email:</strong> {{contact.email}}</div> 
+                    <div><strong>Hasło:</strong> {{contact.password}}</div> 
+                    <div><strong>Kategoria:</strong> {{contact.category}}</div>
+                    @if (contact.subCategory || contact.subCategory !== '') {
+                        <div><strong>Podkategoria:</strong> {{contact.subCategory}}</div>
                     }
-                    <div>{{contact.phoneNumber}}</div>
-                    <!-- TODO pipe do daty -->
-                    <div>{{contact.dateOfBirth}}</div> 
+                    <!-- TODO pipe do ładniejszego numeru telefonu -->
+                    <div><strong>Numer telefonu:</strong> {{contact.phoneNumber}}</div>
+                    <!-- TODO polski pipe do daty -->
+                    <div><strong>Data urodzenia: </strong>{{contact.dateOfBirth | date}}</div> 
                 </div>
                 @if(isLoggedIn){
                     <div>
