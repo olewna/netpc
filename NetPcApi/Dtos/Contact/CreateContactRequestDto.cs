@@ -20,7 +20,8 @@ namespace NetPcApi.Dtos.Contact
         [Required]
         public int CategoryId { get; set; }
         // [Required]
-        public int? SubCategoryId { get; set; }
+        // public int? SubCategoryId { get; set; }
+        public string? SubCategoryName { get; set; }
         [Required]
         [Phone]
         public string PhoneNumber { get; set; } = string.Empty;

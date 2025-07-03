@@ -46,16 +46,21 @@ namespace NetPcApi.Repository
 
         public async Task<List<Contact>> GetAllAsync()
         {
-            return await _context.Contacts.ToListAsync();
-            // TODO dodać paginacje
+            return await _context.Contacts
+                .Include(c => c.Category)
+                .Include(c => c.SubCategory)
+                .ToListAsync();
         }
 
         public async Task<Contact?> GetByIdAsync(int id)
         {
-            return await _context.Contacts.FindAsync(id);
+            return await _context.Contacts
+                .Include(c => c.Category)
+                .Include(c => c.SubCategory)
+                .FirstOrDefaultAsync(contact => contact.Id == id);
         }
 
-        public async Task<Contact?> UpdateAsync(int id, UpdateContactRequestDto contactDto)
+        public async Task<Contact?> UpdateAsync(int id, ContactDto contactDto)
         {
             var foundContact = await _context.Contacts.FindAsync(id);
             if (foundContact == null)

@@ -9,7 +9,7 @@ namespace NetPcApi.Mappers
 {
     public static class ContactMapper
     {
-        public static Contact ToContactFromDto(this CreateContactRequestDto contactDto)
+        public static Contact ToContactFromDto(this CreateContactRequestDto contactDto, int? subcategoryId)
         {
             return new Contact
             {
@@ -18,7 +18,21 @@ namespace NetPcApi.Mappers
                 Email = contactDto.Email,
                 Password = contactDto.Password,
                 CategoryId = contactDto.CategoryId,
-                SubCategoryId = contactDto.SubCategoryId,
+                SubCategoryId = subcategoryId,
+                PhoneNumber = contactDto.PhoneNumber,
+                DateOfBirth = contactDto.DateOfBirth
+            };
+        }
+        public static ContactDto ToContactDtoFromUpdateDto(this UpdateContactRequestDto contactDto, int? subcategoryId)
+        {
+            return new ContactDto
+            {
+                FirstName = contactDto.FirstName,
+                LastName = contactDto.LastName,
+                Email = contactDto.Email,
+                Password = contactDto.Password,
+                CategoryId = contactDto.CategoryId,
+                SubCategoryId = subcategoryId,
                 PhoneNumber = contactDto.PhoneNumber,
                 DateOfBirth = contactDto.DateOfBirth
             };

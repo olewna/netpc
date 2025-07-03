@@ -17,6 +17,11 @@ namespace NetPcApi.Repository
             _context = context;
         }
 
+        public async Task<bool> CheckIfSubcategoryExists(string name)
+        {
+            return await _context.SubCategories.AnyAsync(x => x.Name == name);
+        }
+
         public async Task<SubCategory> CreateAsync(SubCategory model)
         {
             await _context.SubCategories.AddAsync(model);
@@ -32,6 +37,11 @@ namespace NetPcApi.Repository
         public async Task<SubCategory?> GetByIdAsync(int id)
         {
             return await _context.SubCategories.FindAsync(id);
+        }
+
+        public async Task<SubCategory?> GetByNameAsync(string name)
+        {
+            return await _context.SubCategories.FirstOrDefaultAsync(x => x.Name == name);
         }
     }
 }

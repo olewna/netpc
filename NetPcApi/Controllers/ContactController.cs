@@ -16,9 +16,11 @@ namespace NetPcApi.Controllers
     public class ContactController : ControllerBase
     {
         private readonly IContactRepository _contactRepository;
-        public ContactController(IContactRepository contactRepository)
+        private readonly ISubCategoryRepository _subCategoryRepository;
+        public ContactController(IContactRepository contactRepository, ISubCategoryRepository subCategoryRepository)
         {
             _contactRepository = contactRepository;
+            _subCategoryRepository = subCategoryRepository;
         }
 
         [HttpGet]
@@ -30,7 +32,19 @@ namespace NetPcApi.Controllers
             }
 
             var contacts = await _contactRepository.GetAllAsync();
-            return Ok(contacts);
+            var dtos = contacts.Select(c => new ContactWithNamesDto
+            {
+                Id = c.Id,
+                FirstName = c.FirstName,
+                LastName = c.LastName,
+                Email = c.Email,
+                Password = c.Password,
+                CategoryName = c.Category?.Name,
+                SubCategoryName = c.SubCategory?.Name,
+                PhoneNumber = c.PhoneNumber,
+                DateOfBirth = c.DateOfBirth,
+            }).ToList();
+            return Ok(dtos);
         }
 
         [HttpGet("{id:int}")]
@@ -47,7 +61,21 @@ namespace NetPcApi.Controllers
             {
                 return NotFound(new { message = "Nie znaleziono tego kontaktu" });
             }
-            return Ok(contact);
+
+            var dto = new ContactWithNamesDto
+            {
+                Id = contact.Id,
+                FirstName = contact.FirstName,
+                LastName = contact.LastName,
+                Email = contact.Email,
+                Password = contact.Password,
+                CategoryName = contact.Category.Name,
+                SubCategoryName = contact.SubCategory?.Name,
+                PhoneNumber = contact.PhoneNumber,
+                DateOfBirth = contact.DateOfBirth,
+            };
+
+            return Ok(dto);
         }
 
         [HttpPost]
@@ -64,9 +92,51 @@ namespace NetPcApi.Controllers
                 return Conflict(new { message = "Kontakt z podanym emailem już istnieje" });
             }
 
-            var contact = contactModel.ToContactFromDto();
-            await _contactRepository.CreateAsync(contact);
-            return CreatedAtAction(nameof(GetById), new { id = contact.Id }, contact);
+            Contact newContact;
+
+            if (!string.IsNullOrWhiteSpace(contactModel.SubCategoryName))
+            {
+                if (await _subCategoryRepository.CheckIfSubcategoryExists(contactModel.SubCategoryName))
+                {
+
+                    var subcategory = await _subCategoryRepository.GetByNameAsync(contactModel.SubCategoryName);
+
+                    newContact = contactModel.ToContactFromDto(subcategory.Id);
+                }
+                else
+                {
+                    var newSubcategory = new SubCategory
+                    {
+                        Name = contactModel.SubCategoryName,
+                    };
+
+                    await _subCategoryRepository.CreateAsync(newSubcategory);
+                    newContact = contactModel.ToContactFromDto(newSubcategory.Id);
+                }
+            }
+            else
+            {
+                newContact = contactModel.ToContactFromDto(null);
+            }
+
+            // var contact = contactModel.ToContactFromDto();
+            await _contactRepository.CreateAsync(newContact);
+
+
+
+            var contactDto = new ContactDto
+            {
+                FirstName = newContact.FirstName,
+                LastName = newContact.LastName,
+                Email = newContact.Email,
+                Password = newContact.Password,
+                CategoryId = newContact.CategoryId,
+                SubCategoryId = newContact.SubCategoryId,
+                PhoneNumber = newContact.PhoneNumber,
+                DateOfBirth = newContact.DateOfBirth,
+            };
+
+            return CreatedAtAction(nameof(GetById), new { id = newContact.Id }, contactDto);
         }
 
         [HttpDelete("{id:int}")]
@@ -95,7 +165,9 @@ namespace NetPcApi.Controllers
             {
                 return BadRequest(ModelState);
             }
+
             var foundContact = await _contactRepository.GetByIdAsync(id);
+
             if (foundContact == null)
             {
                 return NotFound(new { message = "Nie znaleziono kontaktu" });
@@ -108,7 +180,31 @@ namespace NetPcApi.Controllers
                 }
             }
 
-            var updateContact = await _contactRepository.UpdateAsync(id, contactDto);
+            int? newSubcategoryId = null;
+
+            if (!string.IsNullOrWhiteSpace(contactDto.SubCategoryName)) // czy podkategoria to nie jest pusty string
+            {
+                if (await _subCategoryRepository.CheckIfSubcategoryExists(contactDto.SubCategoryName)) //sprawdzamy czy podany string istnieje jako podkategoria
+                {
+                    var subcategory = await _subCategoryRepository.GetByNameAsync(contactDto.SubCategoryName); // pobieramy podkategorie po nazwie
+
+                    newSubcategoryId = subcategory.Id;
+                }
+                else
+                {
+                    var newSubcategory = new SubCategory
+                    {
+                        Name = contactDto.SubCategoryName,
+                    };
+
+                    await _subCategoryRepository.CreateAsync(newSubcategory);
+                    newSubcategoryId = newSubcategory.Id;
+                }
+            }
+
+            var newContact = contactDto.ToContactDtoFromUpdateDto(newSubcategoryId);
+
+            var updateContact = await _contactRepository.UpdateAsync(id, newContact);
             return Ok(updateContact);
         }
     }
