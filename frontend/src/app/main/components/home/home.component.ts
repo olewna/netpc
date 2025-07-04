@@ -24,7 +24,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.contactService.getAllContacts().subscribe({
-      next: (data) => (this.contacts = data), // TODO dodać loading
+      next: (data) => {
+        // console.log(data);
+        this.contacts = data;
+      }, // TODO dodać loading
       error: (err) => console.error('Błąd podczas pobierania kontaktów:', err),
     });
 

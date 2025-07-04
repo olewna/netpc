@@ -15,16 +15,26 @@ namespace NetPcApi.Data
         {
 
         }
-
         // tabele w sql
-        public DbSet<Contact> Contact { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<SubCategory> SubCategories { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<Contact>()
-                .Property(c => c.Category)
-                .HasConversion<string>();
+            builder.Entity<Category>()
+                .HasMany(c => c.Contacts)
+                .WithOne(c => c.Category)
+                .HasForeignKey(c => c.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<SubCategory>()
+                .HasMany(sc => sc.Contacts)
+                .WithOne(c => c.SubCategory)
+                .HasForeignKey(c => c.SubCategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
 
             List<IdentityRole> roles = new List<IdentityRole>
             {

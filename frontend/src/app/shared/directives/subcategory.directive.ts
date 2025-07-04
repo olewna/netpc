@@ -10,7 +10,7 @@ export class SubCategoryValidator {
       const subCategory = control.value;
 
       if (
-        (category === 'Inny' || category === 'Służbowy') &&
+        (category === '3' || category === '1') &&
         (!subCategory || subCategory.trim() === '')
       ) {
         return { subCategoryRequired: true };

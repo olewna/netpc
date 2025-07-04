@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using NetPcApi.Utils.Enums;
 using NetPcApi.Validation;
 
 namespace NetPcApi.Dtos.Contact
@@ -23,9 +18,10 @@ namespace NetPcApi.Dtos.Contact
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).{8,}$", ErrorMessage = "Hasło musi zawierać 8 znaków, w tym dużą i małą literę, cyfrę i znak specjalny")]
         public string Password { get; set; } = string.Empty;
         [Required]
-        public Category Category { get; set; }
+        public int CategoryId { get; set; }
         // [Required]
-        public string? SubCategory { get; set; }
+        // public int? SubCategoryId { get; set; }
+        public string? SubCategoryName { get; set; }
         [Required]
         [Phone]
         public string PhoneNumber { get; set; } = string.Empty;

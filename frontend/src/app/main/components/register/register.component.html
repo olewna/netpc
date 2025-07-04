@@ -7,7 +7,7 @@
                 @if (registerForm.get('username')?.touched) {
                     @if (registerForm.get('username')?.hasError('required')) {
                         <div class="error">Wymagana nazwa użytkownika!</div>
-                    } @else if (registerForm.get('username')?.hasError('minLength')) {
+                    } @else if (registerForm.get('username')?.hasError('minlength')) {
                         <div class="error">Nazwa użytkownika powinna mieć przynajmniej 3 znaki!</div>
                     }
                 }
@@ -31,7 +31,7 @@
                 @if (registerForm.get('password')?.touched) {
                     @if (registerForm.get('password')?.hasError('required')) {
                         <div class="error">Wymagane hasło!</div>
-                    } @else if (registerForm.get('password')?.hasError('minLength')) {
+                    } @else if (registerForm.get('password')?.hasError('minlength')) {
                         <div class="error">Hasło powinno mieć przynajmniej 8 znaków!</div>
                     } @else if (registerForm.get('password')?.hasError('pattern')) {
                         <div class="error">Hasło powinno składać się z dużej litery, małej litery, cyfry i znaku specjalnego!</div>

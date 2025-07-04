@@ -32,8 +32,8 @@ export class ContactComponent implements OnInit, OnDestroy {
     lastName: '',
     email: '',
     password: '',
-    category: '',
-    subCategory: '',
+    categoryName: '',
+    subCategoryName: '',
     phoneNumber: '',
     dateOfBirth: '',
   };
@@ -48,6 +48,7 @@ export class ContactComponent implements OnInit, OnDestroy {
     this.contactService.getContactById(this.contactId).subscribe({
       next: (res: Contact) => {
         this.contact = res;
+        // console.log(this.contact);
       },
       error: (err: HttpErrorResponse) => {
         this.errorMsg = 'Nie ma takiego kontaktu!';

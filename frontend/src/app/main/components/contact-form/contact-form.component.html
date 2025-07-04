@@ -4,60 +4,97 @@
         <div class="item">
             <label>Imię:</label>
             <input formControlName="firstname" type="text" placeholder="Imię..." />
-            <div class="error" *ngIf="contactForm.get('firstname')?.touched && contactForm.get('firstname')?.invalid">Wymagane</div>
+            @if (contactForm.get('firstname')?.touched) {
+                @if (contactForm.get('firstname')?.hasError('required')) {
+                    <div class="error">Wymagane imię</div>
+                } @else if (contactForm.get('firstname')?.hasError('pattern')) {
+                    <div class="error">Imię powinno się składać z samych liter</div>
+                } @else if (contactForm.get('firstname')?.hasError('minlength')) {
+                    <div class="error">Imię powinno mieć długość przynajmniej 2 liter</div>
+                }
+            }
         </div>
     
         <div class="item">
             <label>Nazwisko:</label>
             <input formControlName="lastname" type="text" placeholder="Nazwisko..." />
-            <div class="error" *ngIf="contactForm.get('lastname')?.touched && contactForm.get('lastname')?.invalid">Wymagane</div>
+            @if (contactForm.get('lastname')?.touched) {
+                @if (contactForm.get('lastname')?.hasError('required')) {
+                    <div class="error">Wymagane nazwisko</div>
+                } @else if (contactForm.get('lastname')?.hasError('pattern')) {
+                    <div class="error">Nazwisko powinno się składać z samych liter</div>
+                } @else if (contactForm.get('lastname')?.hasError('minlength')) {
+                    <div class="error">Nazwisko powinno mieć długość przynajmniej 2 liter</div>
+                }
+            }
         </div>
     
         <div class="item">
             <label>Email:</label>
             <input formControlName="email" type="email" placeholder="Email..." />
-            <div class="error" *ngIf="contactForm.get('email')?.touched && contactForm.get('email')?.invalid">Niepoprawny email</div>
+            @if (contactForm.get('email')?.touched) {
+                @if (contactForm.get('email')?.hasError('required')) {
+                    <div class="error">Wymagany adres email</div>
+                } @else if (contactForm.get('email')?.hasError('email')) {
+                    <div class="error">Niepoprawny email</div>
+                }
+            }
         </div>
     
         <div class="item">
             <label>Hasło:</label>
             <input formControlName="password" type="{{ showPassword ? 'text' : 'password'}}" placeholder="Hasło..." />
             <button type="button" (click)="togglePassword()">{{ !showPassword ? 'Pokaż hasło' : 'Ukryj hasło'}}</button>
-            <div class="error" *ngIf="contactForm.get('password')?.touched && contactForm.get('password')?.invalid">
-                Hasło musi mieć min. 8 znaków, dużą i małą literę, cyfrę oraz znak specjalny.
-            </div>
+            @if (contactForm.get('password')?.touched) {
+                @if (contactForm.get('password')?.hasError('required')) {
+                    <div class="error">Wymagane hasło</div>
+                } @else if (contactForm.get('password')?.hasError('minlength')) {
+                    <div class="error">Hasło musi mieć minimum 8 znaków.</div>
+                } @else if (contactForm.get('password')?.hasError('pattern')) {}
+                    <div class="error">Hasło musi posiadać dużą i małą literę, cyfrę oraz znak specjalny.</div>
+            }
         </div> 
     
         <div class="item">
             <label>Kategoria:</label>
-            <select formControlName="category">
+            <select formControlName="categoryId">
                 <option [value]="''">-- wybierz --</option>
-                <option *ngFor="let category of (categories | keyvalue)" [value]="category.value">{{category.key}} - {{ category.value }}</option>
+                @for (category of categories; track category.id) {
+                    <option [value]="category.id">{{category.id}} - {{ category.name }}</option>
+                }
             </select>
-            <div class="error" *ngIf="contactForm.get('category')?.touched && contactForm.get('category')?.invalid">
-                Wymagana kategoria
-            </div>
+            @if (contactForm.get('categoryId')?.touched) {
+                @if (contactForm.get('categoryId')?.hasError('required')) {
+                    <div class="error">Wymagana kategoria</div>
+                }
+            }
         </div>
         
         <div class="item">
-            @if(contactForm.value.category === "Służbowy" || contactForm.value.category === "Inny") {
+            @if(contactForm.value.categoryId === "1" || contactForm.value.categoryId === "3") {
                 <label>Podkategoria:</label>
             }
-            @switch (contactForm.value.category) {
-                @case ("Służbowy"){
-                    <select formControlName="subCategory">
+            @switch (contactForm.value.categoryId) {
+                @case ("1"){
+                    <select formControlName="subCategoryName">
                         <option [value]="''">-- wybierz --</option>
-                        <option *ngFor="let subcategory of (subcategories | keyvalue)" [value]="subcategory.value">{{subcategory.key}} - {{ subcategory.value }}</option>
+                        @for (subcategory of subcategories; track subcategory.id) {
+                            <option [value]="subcategory.name">{{subcategory.id}} - {{ subcategory.name }}</option>
+                        }
                     </select>
-                    <div class="error" *ngIf="contactForm.get('subCategory')?.touched && contactForm.get('subCategory')?.invalid">
-                        Wymagana podkategoria
-                    </div>
+                    @if (contactForm.get('subCategoryName')?.touched) {
+                        @if (contactForm.get('subCategoryName')?.hasError('subCategoryRequired')) {
+                            <div class="error">Wymagana podkategoria</div>
+                        }
+                    }
                 }
-                @case ("Inny"){
-                    <input formControlName="subCategory" type="text" placeholder="Podkategoria..." />
-                    <div class="error" *ngIf="contactForm.get('subCategory')?.touched && contactForm.get('subCategory')?.invalid">
-                        Wymagana podkategoria
-                    </div>
+                @case ("3"){
+                    <input formControlName="subCategoryName" type="text" placeholder="Podkategoria..." />
+                    @if (contactForm.get('subCategoryName')?.touched) {
+                        @if (contactForm.get('subCategoryName')?.hasError('subCategoryRequired')) {
+                            <div class="error">Wymagana podkategoria</div>
+                        }
+                    }
                 }
             }
         </div>
@@ -65,17 +102,33 @@
         <div class="item">
             <label>Numer telefonu:</label>
             <input formControlName="phoneNumber" type="tel" placeholder="Numer telefonu..." />
-            <div class="error" *ngIf="contactForm.get('phoneNumber')?.touched && contactForm.get('phoneNumber')?.invalid">
-                Wprowadź poprawny numer telefonu
-            </div>
+            @if (contactForm.get('phoneNumber')?.touched) {
+                @if (contactForm.get('phoneNumber')?.hasError('required')) {
+                    <div class="error">
+                        Wymagany numer telefonu
+                    </div>
+                } @else if (contactForm.get('phoneNumber')?.hasError('pattern')) {
+                    <div class="error">
+                        Niepoprawny numer telefonu
+                    </div>
+                }
+            }
         </div>
     
         <div class="item">
             <label>Data urodzenia:</label>
             <input formControlName="dateOfBirth" type="date" [max]="maxDate"/>
-            <div class="error" *ngIf="contactForm.get('dateOfBirth')?.errors?.['futureDate'] && contactForm.get('dateOfBirth')?.touched">
-                Data musi być w przeszłości
-            </div>
+            @if (contactForm.get('dateOfBirth')?.touched) {
+                @if (contactForm.get('dateOfBirth')?.hasError('required')) {
+                    <div class="error">
+                        Wymagana data urodzenia
+                    </div>
+                } @else if (contactForm.get('dateOfBirth')?.errors?.['futureDate']) {
+                    <div class="error">
+                        Data musi być przeszła
+                    </div>
+                }
+            }
         </div>
     
         <div class="item">
