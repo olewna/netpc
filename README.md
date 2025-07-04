@@ -80,3 +80,78 @@ API powinno włączyć się na porcie 2137
 **SWAGGER powinien być dostępny adres:2137/swagger**
 
 ## Bazę danych należy włączyć poprzez przykładowo: SQL Managera
+
+# Specyfikacja techniczna projektu
+
+## backend
+
+### Controller
+
+opisuje endpointy w REST, do których można wysyłać zapytania. Pobiera funkcje z serwisów i repozytorium.
+
+### Service i Repository
+
+implementuje funkcje z interfejsów, które bezpośrednio komunikują się z bazą danych.
+
+### AppDbContext
+
+zawiera konfigurację modeli danych do bazy danych, zachowanie podczas usuwania encji oraz zarządzanie użytkownikiem
+
+### Mappers
+
+dodatkowe funkcje, które mapują z jednego modelu obiektu na drugi model
+
+### Models
+
+Encje, jak będą zapisane w bazie danych z użyciem Entity Framework
+
+### Dtos
+
+Pomocnicze modele, używane m.in. podczas pobierania danych z zapytań POST i PUT, posiadają inne pola niż oryginalne modele
+
+### Program główny
+
+w nim inicjalizowane są kontrolery, użyte repozytoria i wszystkie middleware, a także uruchamia on sam serwer API
+
+## frontend
+
+### main.ts
+
+program główny - uruchamia aplikację
+
+### app.config.ts
+
+inicjalizacja httpClienta wraz z interceptorami, plikiem od ścieżek
+
+### app.routes.ts
+
+plik zarządzający ścieżkami oraz dostępem do nich poprzez Guardy
+
+### moduł shared
+
+Posiada funkcje, komponenty i inne pliki używane w wielu miejscach aplikacji. M.in.:
+
+- serwisy, które zawierają zapytania do backendu
+- modale, które mogą być używane w wielu miejscach do dodatkowych powiadomień użytkownika
+- modele - wzorce obiektów np: kontaktu
+- form.models - modele używane do zapytań typu POST i PUT, zmodyfikowane oryginalne wzorce np: kontaktu
+- dyrektywy - własne funkcje walidujące formularze 
+
+### moduł main
+
+Zawiera pliki, które są używane jako osobne strony. W nich jest logika pobierania z serwisów zasobów, modyfikowania i wyświetlania ich. Każdy z folderów zawiera pliki od tego, czym się zajmuje:
+
+- contact - strona ze szczegółami kontaktu, po zalogowaniu użytkownik ma dodatkowo opcje usunięcia kontaktu lub edycji
+- contact-form - strona do edycji lub edytowania wybranego kontaktu. Zawiera formularz, współpracuje z serwisami, żeby pobierać dane i wysyłać zapytania o stworzenie nowych encji
+- home - strona główna - lista kontaktów
+- login - strona z formularze do logowania
+- not-found - strona, kiedy użytkownika znajdzie się na podstronie, która nie prowadzi na żadną zadeklarowaną ścieżkę
+- register - strona z formularzem do rejestracji konta
+
+### moduł core
+
+Zawiera najważniejsze funkcje i komponenty
+
+- guards - specjalne funkcje, określające kiedy użytkownik może wejść na daną podstronę, a kiedy nie może i co się z nim dzieje, jeśli na taką wejdzie
+- interceptory - funkcje dodające odpowiednie headery do zapytań, w tym przypadku nagłówek "Authorization", kiedy użytkownik jest zalogowany, aby mógł korzystać z zabezpieczonych endpointów
+- layout - komponenty takie jak pasek nawigacji, footer, które powinny się wyświetlać na każdej podstronie. W tym przypadku jest tylko navbar
